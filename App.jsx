@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import './App.css';
-import AboutUs from './AboutUs';
-import ProductList from './ProductList';
-import CartItem from './CartItem';
+import AboutUs from './components/AboutUs';
+import ProductList from './components/ProductList';
+import CartItem from './components/CartItem';
 
 function App() {
   const [showProductList, setShowProductList] = useState(false);
@@ -41,7 +40,7 @@ function App() {
           and succulents. Bring nature into your home and create
           a greener, happier living space.
         </p>
-        <button onClick={handleGetStarted}>
+        <button className="get-started-button" onClick={handleGetStarted}>
           Get Started
         </button>
       </div>
