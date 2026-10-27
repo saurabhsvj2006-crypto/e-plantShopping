@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -45,17 +44,20 @@ button {
 }
 
 .landing-page button,
-.primary-button {
+.primary-button,
+.get-started-button1 {
   padding: 12px 24px;
   background-color: #2e7d32;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
+  margin: 5px;
 }
 
 .landing-page button:hover,
-.primary-button:hover {
+.primary-button:hover,
+.get-started-button1:hover {
   background-color: #1b5e20;
 }
 
@@ -86,9 +88,16 @@ button {
 }
 
 .plants-container,
-.cart-container,
+.cart-container {
+  padding: 25px;
+}
+
 .about-us-container {
   padding: 25px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #263b2b;
+  margin: 20px;
+  border-radius: 10px;
 }
 
 .category-section {
@@ -135,6 +144,10 @@ button {
 .plant-card button:disabled {
   background: #888;
   cursor: not-allowed;
+}
+
+.cart-total {
+  text-align: center;
 }
 
 .cart-item {
