@@ -3,40 +3,61 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 
-function CartItem() {
+function CartItem({ onNavigate }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
 
   const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.cost * item.quantity,
     0
   );
 
-  const handleQuantityChange = (id, quantity) => {
-    dispatch(updateQuantity({ id, quantity }));
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({
+      name: item.name,
+      quantity: item.quantity + 1
+    }));
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeItem(id));
+  const handleDecrement = (item) => {
+    dispatch(updateQuantity({
+      name: item.name,
+      quantity: item.quantity - 1
+    }));
+  };
+
+  const handleRemove = (item) => {
+    dispatch(removeItem(item.name));
   };
 
   return (
-    <div style={styles.container}>
-      <nav style={styles.navbar}>
-        <a href="#home" style={styles.link}>Home</a>
-        <a href="#plants" style={styles.link}>Plants</a>
-        <a href="#cart" style={styles.link}>🛒 Cart</a>
+    <div className="cart-container">
+      <nav className="navbar">
+        <a href="#home" onClick={(event) => {
+          event.preventDefault();
+          onNavigate('home');
+        }}>Home</a>
+
+        <a href="#plants" onClick={(event) => {
+          event.preventDefault();
+          onNavigate('plants');
+        }}>Plants</a>
+
+        <a href="#cart" onClick={(event) => {
+          event.preventDefault();
+          onNavigate('cart');
+        }}>Cart</a>
       </nav>
 
-      <h1 style={styles.heading}>Shopping Cart</h1>
+      <h1>Shopping Cart</h1>
 
       {cartItems.length === 0 ? (
-        <div style={styles.empty}>
+        <div className="empty-cart">
           <h2>Your cart is empty!</h2>
           <p>Discover beautiful plants for your home.</p>
           <button
-            style={styles.button}
-            onClick={() => window.location.href = '#plants'}
+            className="primary-button"
+            onClick={() => onNavigate('plants')}
           >
             Continue Shopping
           </button>
@@ -44,27 +65,21 @@ function CartItem() {
       ) : (
         <>
           {cartItems.map(item => (
-            <div key={item.id} style={styles.card}>
-              <img
-                src={item.image}
-                alt={item.name}
-                style={styles.image}
-              />
+            <div className="cart-item" key={item.name}>
+              <img src={item.image} alt={item.name} />
 
-              <div style={styles.details}>
+              <div className="cart-item-details">
                 <h2>{item.name}</h2>
-                <p>Unit Price: ${item.price.toFixed(2)}</p>
+                <p>Unit Price: ${item.cost.toFixed(2)}</p>
                 <p>Quantity: {item.quantity}</p>
                 <p>
-                  Item Total: ${(item.price * item.quantity).toFixed(2)}
+                  Item Total: $
+                  {(item.cost * item.quantity).toFixed(2)}
                 </p>
 
-                <div style={styles.controls}>
+                <div className="quantity-controls">
                   <button
-                    style={styles.smallButton}
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity - 1)
-                    }
+                    onClick={() => handleDecrement(item)}
                     aria-label={`Decrease ${item.name} quantity`}
                   >
                     −
@@ -73,18 +88,15 @@ function CartItem() {
                   <span>{item.quantity}</span>
 
                   <button
-                    style={styles.smallButton}
-                    onClick={() =>
-                      handleQuantityChange(item.id, item.quantity + 1)
-                    }
+                    onClick={() => handleIncrement(item)}
                     aria-label={`Increase ${item.name} quantity`}
                   >
                     +
                   </button>
 
                   <button
-                    style={styles.deleteButton}
-                    onClick={() => handleRemove(item.id)}
+                    className="cart-item-delete"
+                    onClick={() => handleRemove(item)}
                   >
                     Delete
                   </button>
@@ -93,21 +105,19 @@ function CartItem() {
             </div>
           ))}
 
-          <div style={styles.summary}>
-            <h2>
-              Total Amount: ${totalAmount.toFixed(2)}
-            </h2>
+          <div className="cart-summary">
+            <h2>Total Amount: ${totalAmount.toFixed(2)}</h2>
 
             <button
-              style={styles.button}
-              onClick={() => window.alert('Checkout Coming Soon!')}
+              className="primary-button"
+              onClick={() => window.alert('Coming Soon')}
             >
               Checkout
             </button>
 
             <button
-              style={styles.continueButton}
-              onClick={() => window.location.href = '#plants'}
+              className="continue-button"
+              onClick={() => onNavigate('plants')}
             >
               Continue Shopping
             </button>
@@ -117,93 +127,5 @@ function CartItem() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    fontFamily: 'Arial, sans-serif',
-    padding: '20px',
-    color: '#263b2b'
-  },
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    padding: '16px',
-    backgroundColor: '#245c35'
-  },
-  link: {
-    color: 'white',
-    textDecoration: 'none',
-    fontWeight: 'bold'
-  },
-  heading: {
-    textAlign: 'center',
-    margin: '30px 0'
-  },
-  empty: {
-    textAlign: 'center',
-    padding: '30px'
-  },
-  card: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px',
-    padding: '20px',
-    marginBottom: '20px',
-    border: '1px solid #ddd',
-    borderRadius: '10px',
-    flexWrap: 'wrap'
-  },
-  image: {
-    width: '140px',
-    height: '140px',
-    objectFit: 'cover',
-    borderRadius: '8px'
-  },
-  details: {
-    flex: 1
-  },
-  controls: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    flexWrap: 'wrap'
-  },
-  smallButton: {
-    padding: '8px 14px',
-    cursor: 'pointer',
-    border: '1px solid #2e7d32',
-    borderRadius: '5px',
-    backgroundColor: 'white'
-  },
-  deleteButton: {
-    padding: '8px 14px',
-    cursor: 'pointer',
-    backgroundColor: '#b3261e',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px'
-  },
-  summary: {
-    textAlign: 'center',
-    padding: '24px'
-  },
-  button: {
-    padding: '12px 20px',
-    margin: '10px',
-    cursor: 'pointer',
-    backgroundColor: '#2e7d32',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px'
-  },
-  continueButton: {
-    padding: '12px 20px',
-    margin: '10px',
-    cursor: 'pointer',
-    backgroundColor: '#eeeeee',
-    border: '1px solid #aaa',
-    borderRadius: '5px'
-  }
-};
 
 export default CartItem;
