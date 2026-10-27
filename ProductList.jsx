@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from './CartSlice';
+import { addItem } from '../redux/CartSlice';
 
 const plantsArray = [
   {
@@ -42,7 +41,11 @@ const plantsArray = [
 function ProductList({ onNavigate }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
-  const [addedToCart, setAddedToCart] = useState({});
+
+  // Start from the cart so plants already added stay disabled
+  const [addedToCart, setAddedToCart] = useState(() =>
+    Object.fromEntries(cartItems.map(item => [item.name, true]))
+  );
 
   const cartQuantity = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -74,7 +77,7 @@ function ProductList({ onNavigate }) {
           event.preventDefault();
           onNavigate('cart');
         }}>
-          Cart <span className="cart_quantity_count">{cartQuantity}</span>
+          Cart 🛒 <span className="cart_quantity_count">{cartQuantity}</span>
         </a>
       </nav>
 
@@ -86,7 +89,7 @@ function ProductList({ onNavigate }) {
           <section className="category-section" key={category.category}>
             <h2>{category.category}</h2>
 
-            <div className="plants-grid">
+            <div className="plants-grid product-list">
               {category.plants.map(plant => (
                 <article className="plant-card" key={plant.id}>
                   <img
