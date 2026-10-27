@@ -1,11 +1,15 @@
-
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { removeItem, updateQuantity } from '../redux/CartSlice';
 
 function CartItem({ onNavigate }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
+
+  const cartQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.cost * item.quantity,
@@ -19,15 +23,24 @@ function CartItem({ onNavigate }) {
     }));
   };
 
+  // updateQuantity removes the item when quantity reaches 0
   const handleDecrement = (item) => {
-    dispatch(updateQuantity({
-      name: item.name,
-      quantity: item.quantity - 1
-    }));
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({
+        name: item.name,
+        quantity: item.quantity - 1
+      }));
+    } else {
+      dispatch(removeItem(item.name));
+    }
   };
 
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
+  };
+
+  const handleCheckout = () => {
+    window.alert('Coming Soon');
   };
 
   return (
@@ -46,7 +59,9 @@ function CartItem({ onNavigate }) {
         <a href="#cart" onClick={(event) => {
           event.preventDefault();
           onNavigate('cart');
-        }}>Cart</a>
+        }}>
+          Cart 🛒 <span className="cart_quantity_count">{cartQuantity}</span>
+        </a>
       </nav>
 
       <h1>Shopping Cart</h1>
@@ -64,6 +79,10 @@ function CartItem({ onNavigate }) {
         </div>
       ) : (
         <>
+          <h2 className="cart-total">
+            Total Cart Amount: ${totalAmount.toFixed(2)}
+          </h2>
+
           {cartItems.map(item => (
             <div className="cart-item" key={item.name}>
               <img src={item.image} alt={item.name} />
@@ -73,8 +92,7 @@ function CartItem({ onNavigate }) {
                 <p>Unit Price: ${item.cost.toFixed(2)}</p>
                 <p>Quantity: {item.quantity}</p>
                 <p>
-                  Item Total: $
-                  {(item.cost * item.quantity).toFixed(2)}
+                  Item Total: ${(item.cost * item.quantity).toFixed(2)}
                 </p>
 
                 <div className="quantity-controls">
@@ -95,7 +113,7 @@ function CartItem({ onNavigate }) {
                   </button>
 
                   <button
-                    className="cart-item-delete"
+                    className="delete-button cart-item-delete"
                     onClick={() => handleRemove(item)}
                   >
                     Delete
@@ -109,8 +127,8 @@ function CartItem({ onNavigate }) {
             <h2>Total Amount: ${totalAmount.toFixed(2)}</h2>
 
             <button
-              className="primary-button"
-              onClick={() => window.alert('Coming Soon')}
+              className="get-started-button1"
+              onClick={handleCheckout}
             >
               Checkout
             </button>
