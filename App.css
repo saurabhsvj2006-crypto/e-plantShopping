@@ -1,0 +1,44 @@
+
+.app {
+  min-height: 100vh;
+  background-image: url("https://images.unsplash.com/photo-1416879595882-3373a0480b5b");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+}
+
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+}
+
+.landing-page h1 {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.landing-page p {
+  font-size: 20px;
+  max-width: 600px;
+}
+
+.landing-page button {
+  padding: 12px 24px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.landing-page button:hover {
+  background-color: #1b5e20;
+}
